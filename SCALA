@@ -1,0 +1,187 @@
+Sample Spark Scala Program
+// Import required Spark libraries
+import org.apache.spark.sql.SparkSession
+
+object WeatherAnalysis {
+  def main(args: Array[String]): Unit = {
+
+    // 1. Create Spark Session
+    val spark = SparkSession.builder()
+      .appName("Weather Data Analysis")
+      .master("local[*]")   // runs locally using all cores
+      .getOrCreate()
+
+    // 2. Read the dataset (CSV/text file)
+    val df = spark.read
+      .option("header", "true")     // first row is column names
+      .option("inferSchema", "true") // automatically detect data types
+      .csv("sample_weather.txt")
+
+    // 3. Show the data
+    df.show()
+
+    // 4. Calculate averages
+    df.createOrReplaceTempView("weather")
+
+    val result = spark.sql("""
+      SELECT 
+        AVG(Temperature) AS Avg_Temperature,
+        AVG(DewPoint) AS Avg_DewPoint,
+        AVG(WindSpeed) AS Avg_WindSpeed
+      FROM weather
+    """)
+
+    // 5. Display result
+    result.show()
+
+    // 6. Stop Spark session
+    spark.stop()
+  }
+}
+
+
+Step-by-Step Explanation
+🔹 1. Import Library
+import org.apache.spark.sql.SparkSession
+Imports the core entry point of Spark
+SparkSession is required to:
+Read data
+Run SQL queries
+Work with DataFrames
+🔹 2. Create Spark Session
+val spark = SparkSession.builder()
+  .appName("Weather Data Analysis")
+  .master("local[*]")
+  .getOrCreate()
+What happens here:
+.builder() → initializes Spark configuration
+.appName() → gives a name to your application
+.master("local[*]") → runs Spark locally using all CPU cores
+.getOrCreate() → creates or reuses a session
+
+👉 This is the starting point of any Spark program
+
+🔹 3. Read the Dataset
+val df = spark.read
+  .option("header", "true")
+  .option("inferSchema", "true")
+  .csv("sample_weather.txt")
+Explanation:
+spark.read → used to load data
+.csv() → reads CSV/text file
+header = true → first row is column names
+inferSchema = true → automatically detects:
+Temperature → integer
+WindSpeed → integer
+
+👉 Data is stored in a DataFrame (df)
+
+🔹 4. Display Data
+df.show()
+Prints the dataset in tabular format
+Default → shows first 20 rows
+🔹 5. Create Temporary SQL Table
+df.createOrReplaceTempView("weather")
+Converts DataFrame into a temporary SQL table
+Allows you to run SQL queries on it
+🔹 6. Calculate Averages using SQL
+val result = spark.sql("""
+  SELECT 
+    AVG(Temperature) AS Avg_Temperature,
+    AVG(DewPoint) AS Avg_DewPoint,
+    AVG(WindSpeed) AS Avg_WindSpeed
+  FROM weather
+""")
+Explanation:
+spark.sql() → runs SQL query
+AVG() → calculates average
+AS → renames output columns
+
+👉 This is similar to database queries (MySQL)
+
+🔹 7. Show Result
+result.show()
+Displays the computed averages
+🔹 8. Stop Spark
+spark.stop()
+Ends the Spark session
+Frees resources
+🧠 Key Concepts (Important for Viva)
+Apache Spark → fast big data processing framework
+DataFrame → table-like structure (rows & columns)
+SparkSession → entry point of Spark
+SQL in Spark → allows querying like a database
+Distributed Processing → works on large datasets
+
+
+
+HOW TO DO THIS ON JUPYTER?
+Recommended: Jupyter Notebook + PySpark
+👉 Tools involved:
+Jupyter Notebook
+Apache Spark
+⚙️ Step-by-Step Setup
+🔹 Step 1: Install Required Packages
+
+Open terminal / command prompt:
+
+pip install pyspark notebook
+🔹 Step 2: Start Jupyter Notebook
+jupyter notebook
+Browser will open
+Click New → Python 3 Notebook
+🔹 Step 3: Write Spark Code in Notebook
+🧾 Cell 1: Create Spark Session
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder \
+    .appName("Weather Analysis") \
+    .master("local[*]") \
+    .getOrCreate()
+🧾 Cell 2: Load Dataset
+df = spark.read \
+    .option("header", "true") \
+    .option("inferSchema", "true") \
+    .csv("sample_weather.txt")
+
+df.show()
+🧾 Cell 3: Calculate Averages
+df.createOrReplaceTempView("weather")
+
+result = spark.sql("""
+SELECT 
+  AVG(Temperature) AS Avg_Temperature,
+  AVG(DewPoint) AS Avg_DewPoint,
+  AVG(WindSpeed) AS Avg_WindSpeed
+FROM weather
+""")
+
+result.show()
+🧾 Cell 4: Stop Spark
+spark.stop()
+📁 Where to keep your dataset?
+Put sample_weather.txt in the same folder as your notebook
+OR
+Give full path:
+.csv("C:/Users/yourname/sample_weather.txt")
+🧠 Important Notes (Viva Points)
+Jupyter runs PySpark (Python), not Scala directly
+Spark internally still uses distributed processing
+Same logic works:
+DataFrame
+SQL queries
+Aggregations like AVG()
+🔴 Want Scala in Jupyter? (Advanced)
+
+You need:
+
+Apache Toree kernel
+pip install toree
+jupyter toree install
+
+Then select Scala kernel in Jupyter.
+
+👉 But:
+
+Harder to set up
+Not required for most exams
