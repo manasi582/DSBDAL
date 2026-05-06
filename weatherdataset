@@ -1,0 +1,53 @@
+1. Sample Dataset (sample_weather.txt)
+
+Create a text file named sample_weather.txt with this content:
+
+Date,Temperature,DewPoint,WindSpeed
+2024-01-01,25,18,10
+2024-01-02,28,20,12
+2024-01-03,22,16,8
+2024-01-04,26,19,11
+2024-01-05,30,21,14
+2024-01-06,27,20,13
+2024-01-07,24,17,9
+2024-01-08,29,22,15
+2024-01-09,31,23,16
+2024-01-10,23,15,7
+2024-01-11,26,18,10
+2024-01-12,28,21,12
+2024-01-13,27,19,11
+2024-01-14,25,17,9
+2024-01-15,30,22,14
+
+👉 This is a CSV-style text file (comma-separated values)
+
+2. Python Code to Read and Calculate Averages
+import pandas as pd
+
+# Read the dataset
+df = pd.read_csv("sample_weather.txt")
+
+# Display first few rows
+print(df.head())
+
+# Calculate averages
+avg_temp = df['Temperature'].mean()
+avg_dew = df['DewPoint'].mean()
+avg_wind = df['WindSpeed'].mean()
+
+# Print results
+print("Average Temperature:", avg_temp)
+print("Average Dew Point:", avg_dew)
+print("Average Wind Speed:", avg_wind)
+
+
+
+
+Explanation
+pd.read_csv() → reads the text file into a DataFrame
+.mean() → calculates the average of a column
+Columns used:
+Temperature
+DewPoint
+WindSpeed
+
